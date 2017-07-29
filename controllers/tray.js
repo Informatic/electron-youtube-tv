@@ -1,13 +1,18 @@
 const electron = require('electron');
+const path = require('path');
+const fs = require('fs');
+
 const { app } = electron;
 const platform = require('os').platform();
 
 const { Tray, Menu } = electron;
 
 const APP_TITLE = 'YouTube TV';
-const ICON_PATH = `${__dirname}/../`;
-const ICON_WINDOWS = 'favicon.ico';
-const ICON_OSX = 'favicon.png';
+const ICON_NAMES = {
+  "win32": "build/icon.ico",
+  null: "build/icon.png",
+}
+
 let mainWindow;
 let tray;
 
@@ -37,13 +42,14 @@ function setupTray() {
 }
 
 function getIconFilepathForPlatform() {
-  let filePath;
-  if (platform === 'darwin') {
-    filePath = ICON_PATH + ICON_OSX;
-  } else if (platform === 'win32') {
-    filePath = ICON_PATH + ICON_WINDOWS;
-  }
-  return filePath;
+  let iconName = ICON_NAMES[platform] || ICON_NAMES[null]
+
+  const ICON_PATH = `${__dirname}/../build/`;
+
+  return [
+    path.join(__dirname, '..', iconName),
+    path.join(process.resourcesPath, iconName),
+  ].filter(function(f) { return fs.existsSync(f) })[0];
 }
 
 module.exports = new SysTray();
