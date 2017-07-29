@@ -12,7 +12,10 @@
     "dist": "build"
   },
   "build": {
-    "appId": "com.amoshydra.electron.youtubetv"
+    "appId": "com.amoshydra.electron.youtubetv",
+    "extraResources": [
+      "build/icon.*"
+    ]
   },
   "license": "ISC",
   "dependencies": {
