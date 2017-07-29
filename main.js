@@ -11,6 +11,7 @@ const { app, BrowserWindow, webContents, dialog } = electron;
 const startMinimized = process.argv.indexOf('--hidden') !== -1;
 
 let mainWindow = null;
+let lastInputEvent = 0;
 
 const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
   // Someone tried to run a second instance, we should focus our window.
@@ -44,11 +45,16 @@ app.on('ready', function() {
       console.info('Remote launch!');
       mainWindow.show();
       remoteLaunch = true;
-    } else if(urlChecker.includePath('browse-sets') && remoteLaunch == true) {
+    } else if(urlChecker.includePath('browse-sets') && remoteLaunch == true && new Date() - lastInputEvent > 1000) {
       console.log('Hiding because remote launch...')
       mainWindow.hide();
       remoteLaunch = false;
     }
+  });
+
+  mainWindow.webContents.on('before-input-event', (event) => {
+    lastInputEvent = new Date();
+    console.info('Updating last input event');
   });
 
   mainWindow.on('close', (e) => {
