@@ -87,6 +87,9 @@ app.on('ready', function() {
     e.preventDefault();
     mainWindow.hide();
     mainWindow.setSkipTaskbar(true);
+
+    // Stop video on window close
+    mainWindow.loadURL('https://www.youtube.com/tv');
   });
 
   mainWindow.on('show', (e) => {
