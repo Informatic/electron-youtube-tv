@@ -48,6 +48,7 @@ function askStartup() {
     }
   });
 }
+var remoteLaunch = false;
 
 app.on('ready', function() {
   if (ytAutoLauncher) {
@@ -63,17 +64,22 @@ app.on('ready', function() {
     icon: __dirname + '/favicon.ico',
     show: !startMinimized
   });
+
   mainWindow.setMenu(null);
   tray.init(mainWindow);
 
   mainWindow.webContents.on('did-navigate-in-page', (event, url, isMainFrame) => {
+    console.info('Navigating to page:', url);
     urlChecker.init(url);
 
-    if (urlChecker.includePath('control')) {
-      mainWindow.minimize();
-      mainWindow.focus();
-      mainWindow.maximize();
-      mainWindow.setFullScreen(true);
+    if (urlChecker.includePath('control') && !mainWindow.isVisible()) {
+      console.info('Remote launch!');
+      mainWindow.show();
+      remoteLaunch = true;
+    } else if(urlChecker.includePath('browse-sets') && remoteLaunch == true) {
+      console.log('Hiding because remote launch...')
+      mainWindow.hide();
+      remoteLaunch = false;
     }
   });
 
