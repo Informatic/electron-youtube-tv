@@ -89,6 +89,13 @@ app.on('ready', function() {
     mainWindow.setSkipTaskbar(true);
   });
 
+  mainWindow.on('show', (e) => {
+    mainWindow.focus();
+    mainWindow.maximize();
+    mainWindow.setFullScreen(false);
+    mainWindow.setFullScreen(true);
+  });
+
   mainWindow.loadURL('https://www.youtube.com/tv');
 
 });
